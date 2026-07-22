@@ -1,7 +1,43 @@
 {
   "version": 1,
-  "author": "Uri Shaked",
+  "author": "Werliarlinson Teles",
   "editor": "wokwi",
-  "parts": [ { "type": "board-esp32-devkit-c-v4", "id": "esp", "top": 0, "left": 0, "attrs": {} } ],
-  "connections": [ [ "esp:TX", "$serialMonitor:RX", "", [] ], [ "esp:RX", "$serialMonitor:TX", "", [] ] ]
+  "parts": [
+    {
+      "type": "board-esp32-devkit-c-v4",
+      "id": "esp",
+      "top": -19.2,
+      "left": 4.84,
+      "attrs": { "env": "micropython-20260406-v1.28.0" }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btn1",
+      "top": -70.6,
+      "left": 153.6,
+      "attrs": { "color": "green", "xray": "1" }
+    },
+    { "type": "wokwi-mpu6050", "id": "imu1", "top": 167.02, "left": -160.88, "attrs": {} },
+    {
+      "type": "wokwi-resistor",
+      "id": "r1",
+      "top": 4.25,
+      "left": 161.8,
+      "rotate": 180,
+      "attrs": { "value": "10000" }
+    }
+  ],
+  "connections": [
+    [ "esp:TX", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX", "$serialMonitor:TX", "", [] ],
+    [ "esp:3V3", "btn1:1.l", "red", [ "v0" ] ],
+    [ "btn1:2.r", "esp:35", "green", [ "v0" ] ],
+    [ "btn1:2.r", "r1:1", "green", [ "v0" ] ],
+    [ "r1:2", "esp:GND.2", "black", [ "v0" ] ],
+    [ "imu1:VCC", "esp:3V3", "red", [ "v0" ] ],
+    [ "imu1:GND", "esp:GND.1", "black", [ "v0" ] ],
+    [ "imu1:SDA", "esp:21", "blue", [ "v0" ] ],
+    [ "imu1:SCL", "esp:22", "yellow", [ "v0" ] ]
+  ],
+  "dependencies": {}
 }
