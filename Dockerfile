@@ -1,25 +1,26 @@
-# For more information, please refer to https://aka.ms/vscode-docker-python
-FROM python:3-slim
+# Use the official ESP-IDF image
+FROM espressif/idf:v5.2.2
 
-EXPOSE 5002
+# Set ESP-IDF path
+ENV IDF_PATH="/opt/esp/idf/"
 
-# Keeps Python from generating .pyc files in the container
-ENV PYTHONDONTWRITEBYTECODE=1
+WORKDIR "/"
 
-# Turns off buffering for easier container logging
-ENV PYTHONUNBUFFERED=1
+# RUN mkdir -p /fs
+COPY src/main.py /main.py
+# COPY boot.py /boot.py
 
-# Install pip requirements
-COPY requirements.txt .
-RUN python -m pip install -r requirements.txt
+RUN git clone https://github.com/earlephilhower/mklittlefs.git && \
+  cd mklittlefs && \
+  git submodule update --init && \
+  make dist && \
+  ./mklittlefs --version
 
-WORKDIR /app
-COPY . /app
+RUN cd mklittlefs && \
+  mkdir -p ~/fs && \
+  cp /*.py ~/fs/ && \
+  #  cp /boot.py ~/fs/boot.py && \
+  ./mklittlefs -c ~/fs -b 4096 -p 256 -s 0x200000 /fs.bin
 
-# Creates a non-root user with an explicit UID and adds permission to access the /app folder
-# For more info, please refer to https://aka.ms/vscode-docker-python-configure-containers
-RUN adduser -u 5678 --disabled-password --gecos "" appuser && chown -R appuser /app
-USER appuser
 
-# During debugging, this entry point will be overridden. For more information, please refer to https://aka.ms/vscode-docker-python-debug
-CMD ["gunicorn", "--bind", "0.0.0.0:5002", "src.main:app"]
+CMD ["/bin/bash"]
