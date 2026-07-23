@@ -30,7 +30,7 @@ Para o desenvolvimento e simulação no ambiente Wokwi, os seguintes componentes
 
 - **Fim de Curso / Sensor de Porta (Botão):** Mapeado obrigatoriamente com o ID `btn1`, simulando o estado da porta (Pressionado/Fechado = `1`, Solto/Aberto = `0`).
 
-<div align="center">
+<div align="center"
 <img width="204" height="143" alt="{06442CCC-FADA-43A3-9C57-6E77FC98C916}" src="https://github.com/user-attachments/assets/22fbbacd-5994-41d1-b0a0-ef120afd6f1a" />
 </div>
 

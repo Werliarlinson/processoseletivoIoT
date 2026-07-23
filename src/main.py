@@ -24,7 +24,6 @@ temp_ref = ler_temperatura()
 print("Sistema de Monitoramento Inicializado")
 
 # Variáveis Globais
-porta_estado_anterior = btn1.value()
 tempo_abertura = 0
 tempo_debounce = 0
 alarme_porta = False
@@ -33,19 +32,23 @@ alarme_temp = False
 while True:
     estado_porta = btn1.value()
     temp_atual = ler_temperatura()    
-    if temp_atual < temp_ref and not alarme_temp: # Se a estufa esfriar (devido ao problema do robô), o sistema assume esse novo valor seguro como base.
+    if temp_atual < temp_ref and not alarme_temp: # Se a estufa esfriar, o sistema assume esse novo valor seguro como base.
         temp_ref = temp_atual
     delta_t = temp_atual - temp_ref  # Variação térmica
+    
     # Cenario B: Tempo de Porta Aberta
     if estado_porta == 0:  # Botão solto (0) indica porta aberta
-        if porta_estado_anterior == 1:
+        if tempo_abertura == 0:
             # Borda de descida detectada: guarda o exato momento em que abriu
             tempo_abertura = time.ticks_ms()
-        elif tempo_abertura > 0 and time.ticks_diff(time.ticks_ms(), tempo_abertura) >= LIMITE_TEMPO_X:
+        elif time.ticks_diff(time.ticks_ms(), tempo_abertura) >= LIMITE_TEMPO_X:
             # Verifica se o temporizador estourou
             if not alarme_porta:
                 print("ALERTA: Porta aberta por muito tempo!")
                 alarme_porta = True
+    else:
+        # Reseta o cronômetro para o próximo ciclo
+        tempo_abertura = 0
 
     # Cenario C: Elevação Térmica e Degradação
     if delta_t >= LIMITE_VARIACAO_Y:
@@ -66,6 +69,5 @@ while True:
                 temp_ref = ler_temperatura()
     else:
         tempo_debounce = 0
-    # Atualiza o estado anterior para a próxima iteração
-    porta_estado_anterior = estado_porta
+
     time.sleep_ms(50)
