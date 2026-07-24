@@ -3,7 +3,7 @@
 ## Identificação do Candidato
 
 - **Nome completo:** Werliarlinson de Lima Sá Teles
-- **GitHub:** https://github.com/Werliarlinson
+- **GitHub:** https://github.com/Werliarlinson/processoseletivoIoT.git
 
 ---
 
@@ -31,7 +31,7 @@ Os seguintes componentes foram integrados no ambiente virtual Wokwi (`diagram.js
 
 - **Placa Controladora:** ESP32 DevKit C v4, responsável pelo processamento lógico em MicroPython.
 - **Sensor de Temperatura (MPU6050):** Utilizado para leitura do sensor térmico embutido no chip MEMS via I2C. O Sensor de temperatura, assim como o acelerômetro e o giroscópio tem um conversor AD de 16 bits, e o MPU6050 possui um buffer FIFO de 1024 bytes portanto gerencia os dados de uma fila por vez. A faixa de temperatura de operação é -40 ºC a 85 ºC, se for analisar na prática essa analise é feita pelo chip não é da temperatura do ambiente, normamente é 2-5 ºC maior que a temperatura externa devido ao aquecimento natural do dispositivo.
-- **Botão Fim de Curso:** Simula o interruptor magnético/mecânico da porta. Foi configurado com um resistor de *pull-down* externo de 10kΩ para garantir nível lógico baixo (0) quando a porta é aberta.
+- **Botão:** Simula o interruptor magnético/mecânico da porta. Foi configurado com um resistor de *pull-down* externo de 10kΩ para garantir nível lógico baixo (0) quando a porta é aberta.
 
 ---
 
@@ -39,7 +39,7 @@ Os seguintes componentes foram integrados no ambiente virtual Wokwi (`diagram.js
 
 - **Leitura da Temperatura Direta no Hardware:** Para manter o código enxuto e livre de dependências adicionais, a leitura da temperatura foi feita acessando diretamente os registradores `0x41` do MPU6050 via barramento, desempacotando os bytes nativamente.
 - **Referência Térmica Dinâmica:** A temperatura base do sistema não é absoluta. O código atualiza dinamicamente a referência segura (`temp_ref`) caso o ambiente estabilize em uma temperatura mais baixa, prevenindo alarmes falsos e focando na elevação do gradiente.
-- **Adaptação para Testes Automatizados (CI):** A lógica de normalização recebeu um atraso de estabilização estruturado para acomodar os tempos mortos do *script* de validação, e o gatilho da porta passou a ser por leitura contínua de nível, eliminando condições de corrida durante o *boot*.
+- **Adaptação para Testes Automatizados (CI):** A lógica de normalização recebeu um atraso de estabilização estruturado para acomodar os tempos ocioso do script de validação, e o gatilho da porta passou a ser por leitura contínua de nível, eliminando condições de corrida durante o boot.
 
 ---
 

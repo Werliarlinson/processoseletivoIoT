@@ -26,7 +26,6 @@ print("Sistema de Monitoramento Inicializado")
 
 # Variáveis Globais
 tempo_abertura = 0
-tempo_debounce = 0
 alarme_porta = False
 alarme_temp = False
 
@@ -42,6 +41,8 @@ while True:
         if tempo_abertura == 0:
             # Borda de descida detectada: guarda o exato momento em que abriu
             tempo_abertura = time.ticks_ms()
+            if tempo_abertura == 0: 
+                tempo_abertura = 1
         elif time.ticks_diff(time.ticks_ms(), tempo_abertura) >= LIMITE_TEMPO_X:
             # Verifica se o temporizador estourou
             if not alarme_porta:
@@ -60,15 +61,9 @@ while True:
     # O sistema só sai do estado de erro quando ambas as condições retornarem ao seguro
     if estado_porta == 1 and delta_t < LIMITE_VARIACAO_Y:
         if alarme_porta or alarme_temp:
-            if tempo_debounce == 0:
-                tempo_debounce = time.ticks_ms()
-  
-            elif time.ticks_diff(time.ticks_ms(), tempo_debounce) > 500:
-                print("Status: Sistema Normalizado.")
-                alarme_porta = False
-                alarme_temp = False
-                temp_ref = ler_temperatura()
-    else:
-        tempo_debounce = 0
-
+            print("Status: Sistema Normalizado.")
+            alarme_porta = False
+            alarme_temp = False
+            temp_ref = ler_temperatura()
+    
     time.sleep_ms(50)
