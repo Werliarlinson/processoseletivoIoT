@@ -14,11 +14,12 @@ MPU = 0x68
 i2c.writeto_mem(MPU, 0x6B, b'\x00') # Inicializa o MPU6050
 time.sleep_ms(100)
 
+# Função para traduzir os bytes de temperatura do sensor para Celsius
 def ler_temperatura():
     # Lê 2 bytes de temperatura do sensor e converte para Celsius
     temp_bytes = i2c.readfrom_mem(MPU, 0x41, 2)
     temp_raw = struct.unpack('>h', temp_bytes)[0]
-    return (temp_raw / 340.0) + 36.53
+    return (temp_raw / 340.0) + 36.53 # Fórmula de conversão do MPU6050 para Celsius
 
 temp_ref = ler_temperatura()
 print("Sistema de Monitoramento Inicializado")
